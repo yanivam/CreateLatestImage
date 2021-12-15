@@ -1,7 +1,7 @@
 //dependencies
 const { S3Client, GetObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3');
 const util = require('util');
-
+const getStream = require('get-stream')
 // get reference to S3 client
 const s3 = new S3Client({
     region: 'us-east-2',
@@ -46,11 +46,11 @@ exports.handler = async (event, context, callback) => {
     }
     // Upload the thumbnail image to the destination bucket
     try {
-        console.log(dstKey)
+        const buf = await getStream.buffer(origimage.Body);
         const destparams = {
             Bucket: dstBucket,
             Key: dstKey,
-            Body: origimage.Body
+            Body: buf
         };
         const putResult = await s3.send(new PutObjectCommand(destparams))
     } catch (error) {
