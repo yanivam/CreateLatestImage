@@ -44,6 +44,8 @@ exports.handler = async (event, context, callback) => {
             Body: origimage.Body,
             ContentType: "image"
         };
+        console.log(dstBucket)
+        console.log(dstKey)
         const putResult = await s3.putObject(destparams).promise();
     } catch (error) {
         console.log(error);
