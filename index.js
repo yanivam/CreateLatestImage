@@ -10,7 +10,6 @@ exports.handler = async (event, context, callback) => {
     const srcBucket = event.Records[0].s3.bucket.name;
     // Object key may have spaces or unicode non-ASCII characters.
     const srcKey = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " "));
-    console.log(srcKey.split("/")[0])
     const dstBucket = "annaboto-latest/";
     const dstKey = dstBucket + srcKey.split("/")[0] + "/latest.png";
     // Infer the image type from the file suffix.
@@ -27,6 +26,8 @@ exports.handler = async (event, context, callback) => {
     }
     // Download the image from the S3 source bucket.
     try {
+        console.log(srcBucket)
+        console.log(srcKey)
         const params = {
             Bucket: srcBucket,
             Key: srcKey
