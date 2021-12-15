@@ -38,7 +38,7 @@ exports.handler = async (event, context, callback) => {
             Bucket: srcBucket,
             Key: srcKey
         };
-        var origimage = await s3.getObject(params).promise();
+        var origimage = await s3.send(new GetObjectCommand(params))
     } catch (error) {
         console.log(error);
         return;
