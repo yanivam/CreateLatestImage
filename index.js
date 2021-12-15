@@ -1,5 +1,5 @@
 //dependencies
-const { S3Client } = require('@aws-sdk/client-s3');
+const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
 const util = require('util');
 
 // get reference to S3 client
