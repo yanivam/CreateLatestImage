@@ -5,7 +5,6 @@ const util = require('util');
 // get reference to S3 client
 const s3 = new S3Client({
     region: 'us-east-2',
-    signatureVersion: 'v4',
     credentials: {
         accessKeyId: process.env.AWSAccessKeyId,
         secretAccessKey: process.env.AWSSecretAccessKey
