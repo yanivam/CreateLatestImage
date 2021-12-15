@@ -1,5 +1,5 @@
 //dependencies
-const { S3Client, GetObjectCommand } = require('@aws-sdk/client-s3');
+const { S3Client, GetObjectCommand, PutObjectCommand } = require('@aws-sdk/client-s3');
 const util = require('util');
 
 // get reference to S3 client
@@ -38,6 +38,7 @@ exports.handler = async (event, context, callback) => {
             Bucket: srcBucket,
             Key: srcKey
         };
+        console.log(params)
         var origimage = await s3.send(new GetObjectCommand(params))
     } catch (error) {
         console.log(error);
@@ -49,10 +50,9 @@ exports.handler = async (event, context, callback) => {
         const destparams = {
             Bucket: dstBucket,
             Key: dstKey,
-            Body: origimage.Body,
-            ContentType: "image"
+            Body: origimage.Body
         };
-        const putResult = await s3.putObject(destparams).promise();
+        const putResult = await s3.send(new PutObjectCommand(destparams))
     } catch (error) {
         console.log(error);
         return;
