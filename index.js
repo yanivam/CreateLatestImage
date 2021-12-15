@@ -1,9 +1,17 @@
 //dependencies
-const AWS = require('aws-sdk');
+const { S3Client } = require('@aws-sdk/client-s3');
 const util = require('util');
 
 // get reference to S3 client
-const s3 = new AWS.S3();
+const s3 = new S3Client({
+    region: 'us-east-2',
+    signatureVersion: 'v4',
+    credentials: {
+        accessKeyId: process.env.AWSAccessKeyId,
+        secretAccessKey: process.env.AWSSecretAccessKey
+    }
+})
+
 exports.handler = async (event, context, callback) => {
     // Read options from the event parameter.
     console.log("Reading options from event:\n", util.inspect(event, { depth: 5 }));
@@ -26,8 +34,6 @@ exports.handler = async (event, context, callback) => {
     }
     // Download the image from the S3 source bucket.
     try {
-        console.log(srcBucket)
-        console.log(srcKey)
         const params = {
             Bucket: srcBucket,
             Key: srcKey
@@ -39,14 +45,13 @@ exports.handler = async (event, context, callback) => {
     }
     // Upload the thumbnail image to the destination bucket
     try {
+        console.log(dstKey)
         const destparams = {
             Bucket: dstBucket,
             Key: dstKey,
             Body: origimage.Body,
             ContentType: "image"
         };
-        console.log(dstBucket)
-        console.log(dstKey)
         const putResult = await s3.putObject(destparams).promise();
     } catch (error) {
         console.log(error);
