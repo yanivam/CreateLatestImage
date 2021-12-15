@@ -5,6 +5,7 @@ const util = require('util');
 // get reference to S3 client
 const s3 = new S3Client({
     region: 'us-east-2',
+    signatureVersion: 'v4',
     credentials: {
         accessKeyId: process.env.AWSAccessKeyId,
         secretAccessKey: process.env.AWSSecretAccessKey
@@ -17,8 +18,8 @@ exports.handler = async (event, context, callback) => {
     const srcBucket = event.Records[0].s3.bucket.name;
     // Object key may have spaces or unicode non-ASCII characters.
     const srcKey = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " "));
-    const dstBucket = "annaboto-latest/";
-    const dstKey = dstBucket + srcKey.split("/")[0] + "/latest.png";
+    const dstBucket = "annaboto-latest";
+    const dstKey = srcKey.split("/")[0] + "/latest.png";
     // Infer the image type from the file suffix.
     const typeMatch = srcKey.match(/\.([^.]*)$/);
     if (!typeMatch) {
