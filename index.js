@@ -52,7 +52,7 @@ exports.handler = async (event, context, callback) => {
             Key: dstKey,
             Body: buf
         };
-        const putResult = await s3.send(new PutObjectCommand(destparams))
+        if (origimage.ContentLength > 20000) { await s3.send(new PutObjectCommand(destparams)) }
     } catch (error) {
         console.log(error);
         return;
