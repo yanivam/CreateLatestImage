@@ -13,26 +13,22 @@ const s3 = new S3Client({
 })
 
 exports.handler = async (event, context, callback) => {
-    // Read options from the event parameter.
     console.log("Reading options from event:\n", util.inspect(event, { depth: 5 }));
     const srcBucket = event.Records[0].s3.bucket.name;
-    // Object key may have spaces or unicode non-ASCII characters.
     const srcKey = decodeURIComponent(event.Records[0].s3.object.key.replace(/\+/g, " "));
+    print(srcKey)
     const dstBucket = "annaboto-latest";
     const dstKey = srcKey.split("/")[0] + "/latest.png";
-    // Infer the image type from the file suffix.
     const typeMatch = srcKey.match(/\.([^.]*)$/);
     if (!typeMatch) {
         console.log("Could not determine the image type.");
         return;
     }
-    // Check that the image type is supported
     const imageType = typeMatch[1].toLowerCase();
     if (imageType != "jpg" && imageType != "png") {
         console.log(`Unsupported image type: ${imageType}`);
         return;
     }
-    // Download the image from the S3 source bucket.
     try {
         const params = {
             Bucket: srcBucket,
@@ -44,7 +40,6 @@ exports.handler = async (event, context, callback) => {
         console.log(error);
         return;
     }
-    // Upload the thumbnail image to the destination bucket
     try {
         const buf = await getStream.buffer(origimage.Body);
         const destparams = {
